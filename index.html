@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="calendar">
+        <div id="header">
+            <button id="prev">&lt;</button>
+            <h2 id="month-year"></h2>
+            <button id="next">&gt;</button>
+        </div>
+        <div id="days">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+        </div>
+        <div id="dates"></div>
+    </div>
+
+    <div id="modal" class="hidden">
+        <div id="modal-content">
+            <span id="close">&times;</span>
+            <h2 id="selected-date"></h2>
+            <textarea id="journal" placeholder="Write your daily journal here..."></textarea>
+            <ul id="todo-list"></ul>
+            <input type="text" id="new-todo" placeholder="New To-Do">
+            <button id="add-todo">Add To-Do</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
