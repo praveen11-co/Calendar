@@ -1,13 +1,111 @@
+/* General Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
 }
 
+.container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row; /* Keep horizontal layout */
+    justify-content: space-between;
+}
+
+.section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    flex-direction: column; /* Ensure internal elements are vertical */
+}
+
+#calendar-section {
+    background: rgb(123, 143, 232);
+    border-right: 1px solid #ddd;
+}
+
+#main-menu-section, #todo-section {
+    background: #257af9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #ddd;
+}
+
+.sub-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd; /* Add a thin border between sub-sections */
+}
+
+.sub-section:last-child {
+    border-bottom: none; /* Remove border from the last sub-section */
+}
+
+#date-clock {
+    flex-direction: column;
+}
+
+#todo-section {
+    background: rgb(53, 107, 214);
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#todo-list-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.expandable-section {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.expandable-section h3 {
+    margin-bottom: 5px;
+}
+
+.expandable-section textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+}
+
+.expand-collapse-button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.expand-collapse-button:hover {
+    background-color: #2c3e94;
+}
+
+/* Calendar Styles */
 #calendar {
     width: 300px;
     background: white;
@@ -20,9 +118,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 15px 20px;
     background-color: #3f51b5;
     color: white;
+    font-size: 1.2em;
+}
+
+#prev, #next {
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+#prev:hover, #next:hover {
+    color: #b3c2f2;
 }
 
 #days, #dates {
@@ -33,8 +141,16 @@ body {
 
 #days div, #dates div {
     text-align: center;
-    padding: 10px;
+    padding: 10px 5px;
+    margin: 2px 0;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#days div {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #333;
 }
 
 #dates div {
@@ -45,17 +161,19 @@ body {
     background-color: #e0e0e0;
 }
 
-.hidden {
-    display: none;
+#dates div.active {
+    background-color: #3f51b5;
+    color: white;
 }
 
+/* Modal Styles */
 #modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: none;
     justify-content: center;
     align-items: center;
@@ -69,8 +187,10 @@ body {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 90%;
+    max-width: 400px;
     position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 #close {
@@ -78,31 +198,75 @@ body {
     top: 10px;
     right: 10px;
     cursor: pointer;
+    font-size: 1.2em;
+    color: #aaa;
 }
 
+#close:hover {
+    color: #333;
+}
+
+/* Journal and Todo List Styles */
 #journal {
-    width: 100%;
+    width: calc(100% - 20px);
     height: 100px;
-    margin-bottom: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
 }
 
 #todo-list {
     list-style-type: none;
     padding: 0;
-    margin: 0 0 10px 0;
+    margin: 10px 0;
+    max-height: 150px;
+    overflow-y: auto;
 }
 
 #todo-list li {
-    padding: 5px 0;
+    padding: 8px;
     border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#new-todo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
 }
 
 #new-todo {
-    width: calc(100% - 90px);
-    padding: 5px;
+    width: calc(100% - 80px);
+    padding: 10px;
     margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
 #add-todo {
-    padding: 5px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #3f51b5;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#add-todo:hover {
+    background-color: #2c3e94;
+}
+
+#digital-clock {
+    font-size: 2em;
+    margin-top: 10px;
+}
+
+#notes-journal-container {
+    padding: 10px;
 }
