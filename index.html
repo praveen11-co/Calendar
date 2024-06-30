@@ -3,36 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Calendar</title>
+    <title>Calendar App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="calendar">
-        <div id="header">
-            <button id="prev">&lt;</button>
-            <h2 id="month-year"></h2>
-            <button id="next">&gt;</button>
+    <div class="container">
+        <div id="calendar-section" class="section">
+            <div id="calendar">
+                <!-- Calendar content (generated dynamically) -->
+                <div id="header">
+                    <button id="prev">&lt;</button>
+                    <h2 id="month-year"></h2>
+                    <button id="next">&gt;</button>
+                </div>
+                <div id="days"></div>
+                <div id="dates"></div>
+            </div>
         </div>
-        <div id="days">
-            <div>Sun</div>
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
+        <div id="main-menu-section" class="section">
+            <div class="sub-section">
+                <p>Hello, organize your day here</p>
+            </div>
+            <div id="date-clock" class="sub-section">
+                <div id="date-display"></div>
+                <div id="digital-clock"></div>
+            </div>
+            <div id="todo-list-container" class="sub-section">
+                <h3>To-Do List</h3>
+                <ul id="todo-list">
+                    <!-- To-Do list items (generated dynamically) -->
+                </ul>
+                <div id="new-todo-container">
+                    <input type="text" id="new-todo" placeholder="Add new task">
+                    <button id="add-todo">Add</button>
+                </div>
+            </div>
         </div>
-        <div id="dates"></div>
+        <div id="todo-section" class="section">
+            <div class="sub-section" id="notes-section">
+                <h3>Notes</h3>
+                <textarea id="notes" placeholder="Write your notes"></textarea>
+            </div>
+            <div class="sub-section" id="journal-section">
+                <h3>Daily Journal</h3>
+                <textarea id="journal" placeholder="Write your journal"></textarea>
+            </div>
+        </div>
     </div>
 
-    <div id="modal" class="hidden">
+    <div id="modal">
         <div id="modal-content">
             <span id="close">&times;</span>
-            <h2 id="selected-date"></h2>
-            <textarea id="journal" placeholder="Write your daily journal here..."></textarea>
-            <ul id="todo-list"></ul>
-            <input type="text" id="new-todo" placeholder="New To-Do">
-            <button id="add-todo">Add To-Do</button>
+            <h2 id="modal-date"></h2>
+            <textarea id="modal-notes" placeholder="Write notes for this date"></textarea>
+            <button id="save-notes">Save Notes</button>
         </div>
     </div>
 
