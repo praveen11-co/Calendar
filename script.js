@@ -1,113 +1,138 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const calendar = document.getElementById('calendar');
-    const monthYear = document.getElementById('month-year');
-    const dates = document.getElementById('dates');
-    const prev = document.getElementById('prev');
-    const next = document.getElementById('next');
-    const modal = document.getElementById('modal');
-    const close = document.getElementById('close');
-    const selectedDate = document.getElementById('selected-date');
-    const journal = document.getElementById('journal');
-    const todoList = document.getElementById('todo-list');
-    const newTodo = document.getElementById('new-todo');
-    const addTodo = document.getElementById('add-todo');
+document.addEventListener("DOMContentLoaded", function() {
+    // DOM elements
+    const monthYearElement = document.getElementById("month-year");
+    const daysElement = document.getElementById("days");
+    const datesElement = document.getElementById("dates");
+    const digitalClockElement = document.getElementById("digital-clock");
+    const dateDisplayElement = document.getElementById("date-display");
+    const todoListElement = document.getElementById("todo-list");
+    const newTodoInput = document.getElementById("new-todo");
+    const addTodoButton = document.getElementById("add-todo");
+    const notesElement = document.getElementById("notes");
+    const journalElement = document.getElementById("journal");
 
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    let currentSelectedDate = null;
+    // Initial setup
+    const today = new Date();
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth();
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    function loadCalendar(month, year) {
-        const firstDay = new Date(year, month).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+    setupCalendar(today);
+    updateClock();
+    updateDateDisplay();
 
-        monthYear.innerText = `${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`;
-
-        dates.innerHTML = '';
-
-        for (let i = 0; i < firstDay; i++) {
-            dates.innerHTML += '<div></div>';
-        }
-
-        for (let i = 1; i <= daysInMonth; i++) {
-            const dateDiv = document.createElement('div');
-            dateDiv.innerText = i;
-            dateDiv.addEventListener('click', () => openModal(i));
-            dates.appendChild(dateDiv);
-        }
-    }
-
-    function openModal(day) {
-        currentSelectedDate = `${currentYear}-${currentMonth + 1}-${day}`;
-        selectedDate.innerText = `${day} ${new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })} ${currentYear}`;
-        modal.style.display = 'block'; // Show modal
-        modal.classList.add('show-modal');
-
-        const storedJournal = localStorage.getItem(`${currentSelectedDate}-journal`);
-        journal.value = storedJournal || '';
-
-        const storedTodos = JSON.parse(localStorage.getItem(`${currentSelectedDate}-todos`)) || [];
-        renderTodoList(storedTodos);
-    }
-
-    function closeAndSaveModal() {
-        modal.style.display = 'none'; // Hide modal
-        modal.classList.remove('show-modal');
-        saveEntry();
-    }
-
-    function renderTodoList(todos) {
-        todoList.innerHTML = '';
-        todos.forEach(todo => {
-            const li = document.createElement('li');
-            li.innerText = todo;
-            todoList.appendChild(li);
-        });
-    }
-
-    close.addEventListener('click', closeAndSaveModal);
-
-    addTodo.addEventListener('click', () => {
-        const todo = newTodo.value.trim();
-        if (todo) {
-            const todos = JSON.parse(localStorage.getItem(`${currentSelectedDate}-todos`)) || [];
-            todos.push(todo);
-            localStorage.setItem(`${currentSelectedDate}-todos`, JSON.stringify(todos));
-            renderTodoList(todos);
-            newTodo.value = '';
-        }
-    });
-
-    journal.addEventListener('input', () => {
-        saveEntry();
-    });
-
-    function saveEntry() {
-        if (currentSelectedDate) {
-            localStorage.setItem(`${currentSelectedDate}-journal`, journal.value);
-        }
-    }
-
-    prev.addEventListener('click', () => {
+    // Calendar navigation
+    document.getElementById("prev").addEventListener("click", () => {
         currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        loadCalendar(currentMonth, currentYear);
+        setupCalendar(new Date(currentYear, currentMonth, 1));
     });
 
-    next.addEventListener('click', () => {
+    document.getElementById("next").addEventListener("click", () => {
         currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        loadCalendar(currentMonth, currentYear);
+        setupCalendar(new Date(currentYear, currentMonth, 1));
     });
 
-    // Initialize calendar and modal
-    modal.style.display = 'none'; // Hide modal initially
+    // Add todo item
+    addTodoButton.addEventListener("click", () => {
+        const todoText = newTodoInput.value.trim();
+        if (todoText !== "") {
+            addTodoItem(todoText);
+            newTodoInput.value = "";
+        }
+    });
 
-    // Load current month's calendar
-    loadCalendar(currentMonth, currentYear);
+    // Clock update
+    setInterval(updateClock, 1000);
+
+    // Function to set up the calendar for a given month
+    function setupCalendar(date) {
+        currentYear = date.getFullYear();
+        currentMonth = date.getMonth();
+
+        monthYearElement.textContent = months[currentMonth] + " " + currentYear;
+
+        // Clear previous calendar
+        daysElement.innerHTML = "";
+        datesElement.innerHTML = "";
+
+        // Setup days of the week headers
+        for (let day of daysOfWeek) {
+            const dayElement = document.createElement("div");
+            dayElement.textContent = day;
+            daysElement.appendChild(dayElement);
+        }
+
+        // Setup dates for the current month
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+        const daysInMonth = lastDayOfMonth.getDate();
+
+        // Determine the starting day of the week (0 - 6 index)
+        let startDayOfWeek = firstDayOfMonth.getDay();
+
+        if (startDayOfWeek === 0) {
+            startDayOfWeek = 7; // Adjust for Sunday (0 index)
+        }
+
+        // Create blank spaces for days before the start of the month
+        for (let i = 1; i < startDayOfWeek; i++) {
+            const blankDayElement = document.createElement("div");
+            datesElement.appendChild(blankDayElement);
+        }
+
+        // Create day elements for the current month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement("div");
+            dayElement.textContent = day;
+            dayElement.addEventListener("click", () => openModal(day, currentMonth, currentYear));
+            datesElement.appendChild(dayElement);
+
+            // Highlight today's date
+            if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                dayElement.classList.add("active");
+            }
+        }
+    }
+
+    // Function to update the digital clock
+    function updateClock() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
+        digitalClockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Function to update the date display
+    function updateDateDisplay() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateDisplayElement.textContent = today.toLocaleDateString('en-US', options);
+    }
+
+    // Function to add a new todo item
+    function addTodoItem(text) {
+        const li = document.createElement("li");
+        li.textContent = text;
+        todoListElement.appendChild(li);
+    }
+
+    // Modal functionality
+    const modal = document.getElementById("modal");
+    const modalContent = document.getElementById("modal-content");
+    const closeModal = document.getElementById("close");
+
+    closeModal.addEventListener("click", () => {
+        modal.classList.remove("show-modal");
+    });
+
+    // Function to open modal with date details
+    function openModal(day, month, year) {
+        const modalDate = `${day} ${months[month]} ${year}`;
+        document.getElementById("modal-date").textContent = modalDate;
+        modal.classList.add("show-modal");
+    }
 });
